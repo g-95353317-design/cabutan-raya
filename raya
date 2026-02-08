@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cabutan Raya</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #fff;
+  text-align: center;
+  padding: 30px;
+}
+input, button {
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+}
+button {
+  background: #22c55e;
+  color: #000;
+  font-weight: bold;
+}
+.card {
+  max-width: 400px;
+  margin: auto;
+  background: #020617;
+  padding: 20px;
+  border-radius: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="formCard">
+  <h2>Maklumat Peserta</h2>
+  <input id="nama" placeholder="Nama penuh">
+  <input id="telefon" placeholder="No Telefon">
+  <input id="ic" placeholder="No IC">
+  <button onclick="simpan()">Simpan & Teruskan</button>
+</div>
+
+<div class="card" id="cabutCard" style="display:none">
+  <h2 id="infoQR"></h2>
+  <button onclick="cabut()">🎁 CABUT HADIAH</button>
+  <br><br>
+  <button onclick="reset()" style="background:#ef4444;color:#fff">
+    Tukar Peserta
+  </button>
+</div>
+
+<script>
+const API_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLg6cPafxqH_Zx6o6PDY5P---ICqiFib3PsAU1PqjK7ooCcCbgIkwiRcGVQWwzNKU-CnVmiWpuAbT4yLkGKAIgCGCZSMkDhQiREwBK2BOo1mv0lSrmplnT5fhb67k9u7-ebMPKMrB_72R58Ka4NrpJCNfQYnK6M5VRpqSK5Ys2su07ch_rccIWswNRIrjjxCNp_LIFHTCAuz-Ax4MZ8dMZz4Hvt1_BOk-kKSqzKadMiyQihspQ6-f5kf6khiMNuGCNVoZ4qbqviEMhatClM7cJ_0aqUgptK4PUqBdbCk&lib=Mry39q-wnFWQC420cHHhQrVamaxgrmA3e";
+
+// Ambil QR dari URL
+const qr = new URLSearchParams(window.location.search).get("qr");
+
+// Jika tiada QR
+if (!qr) {
+  alert("QR tidak sah");
+}
+
+// Jika data peserta dah ada
+if (localStorage.getItem("peserta")) {
+  formCard.style.display = "none";
+  cabutCard.style.display = "block";
+  infoQR.innerText = "QR dikesan: " + qr;
+}
+
+function simpan() {
+  if (!nama.value || !telefon.value || !ic.value) {
+    alert("Sila isi semua maklumat");
+    return;
+  }
+
+  const peserta = {
+    nama: nama.value,
+    telefon: telefon.value,
+    ic: ic.value
+  };
+
+  localStorage.setItem("peserta", JSON.stringify(peserta));
+  location.reload();
+}
+
+function cabut() {
+  const peserta = JSON.parse(localStorage.getItem("peserta"));
+
+  fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      nama: peserta.nama,
+      telefon: peserta.telefon,
+      ic: peserta.ic,
+      qr: qr
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === "duplicate") {
+      alert("❌ QR ini telah digunakan");
+    } else if (data.status === "habis") {
+      alert("😢 Hadiah telah habis");
+    } else if (data.status === "ok") {
+      alert("🎉 TAHNIAH!\nAnda menang:\n\n" + data.hadiah);
+    } else {
+      alert("Ralat sistem");
+    }
+  })
+  .catch(err => {
+    alert("Gagal sambung ke server");
+    console.error(err);
+  });
+}
+
+function reset() {
+  localStorage.clear();
+  location.reload();
+}
+</script>
+
+</body>
+</html>
