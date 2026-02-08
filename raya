@@ -56,7 +56,7 @@ button {
 </div>
 
 <script>
-const API_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLg6cPafxqH_Zx6o6PDY5P---ICqiFib3PsAU1PqjK7ooCcCbgIkwiRcGVQWwzNKU-CnVmiWpuAbT4yLkGKAIgCGCZSMkDhQiREwBK2BOo1mv0lSrmplnT5fhb67k9u7-ebMPKMrB_72R58Ka4NrpJCNfQYnK6M5VRpqSK5Ys2su07ch_rccIWswNRIrjjxCNp_LIFHTCAuz-Ax4MZ8dMZz4Hvt1_BOk-kKSqzKadMiyQihspQ6-f5kf6khiMNuGCNVoZ4qbqviEMhatClM7cJ_0aqUgptK4PUqBdbCk&lib=Mry39q-wnFWQC420cHHhQrVamaxgrmA3e";
+const API_URL = "https://script.google.com/macros/s/AKfycbxmoiWjh1KJ9Pfc5N80FFk2w_vrBF8w6m2P_dQ5RfXwr_Bp6AUaaZVyT7x322dH4VfqMg/exec";
 
 // Ambil QR dari URL
 const qr = new URLSearchParams(window.location.search).get("qr");
